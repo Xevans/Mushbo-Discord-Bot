@@ -1,0 +1,19 @@
+client = discord.Client(intents=intents, command_prefix='!')
+
+@client.event
+async def on_ready():
+    for guild in client.guilds:
+        if guild.name == GUILD:
+            break
+
+    members = '\n - '.join([member.name for member in guild.members])
+    channels = '\n - '.join(channel.name for channel in guild.channels)
+    print(f'Guild Members:\n - {members}')
+    print(f'\nGuild Channels:\n - {channels}')
+
+
+
+@client.event
+async def on_member_join(member):
+    await member.create_dm()
+    await member.dm_channel.send(f'Hi {member.name}, welcome to Reliquia! Be sure to introduce yourself, and have an awesome time!')
