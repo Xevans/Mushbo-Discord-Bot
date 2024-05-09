@@ -6,6 +6,7 @@ import requests
 
 import discord
 from discord.ext import commands
+import re
 
 
 load_dotenv()
@@ -38,6 +39,24 @@ async def age_guess(ctx, provided_name: str):
     name = data['name']
     age = data['age']
     response = f'\n\n {name}, your age is {age}, accoring to the agify api.'
+    await ctx.send(response)
+
+
+@bot.command(name='define', help='Search wiki using any word you provide.')
+async def define(ctx, provided_name: str):
+    name = provided_name
+    URL = "https://en.wikipedia.org/w/rest.php/v1/search/page?q=" + name + '&limit=1'
+    r = requests.get(url=URL)
+    data = r.json()
+    page = data['pages'][0]
+    title = page['title']
+    excerpt = page['excerpt']
+    s = f'{title}: {excerpt}...'
+
+    # remove <span> references
+    pattern = re.compile(r"\<(.*?)\>")
+    s = re.sub(pattern, "", s)
+    response = s
     await ctx.send(response)
 
 
